@@ -17,12 +17,14 @@
   </head>
   <body>
     <canvas id='display'></canvas>
+    <script src='js/input.js'></script>
     <script src='js/game.js'></script>
     <script src='js/renderer.js'></script>
     <script src='js/clock.js'></script>
     <script>
 
-    const game = Game()
+    const input = Input()
+    const game = Game(input)
     const renderer = Renderer(document.getElementById('display'))
     const clock = Clock(60, game, renderer)
 

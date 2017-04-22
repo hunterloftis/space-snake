@@ -1,4 +1,4 @@
-function Game() {
+function Game(input) {
   const snake = Snake()
 
   return {
@@ -7,7 +7,7 @@ function Game() {
   }
 
   function update(seconds) {
-    snake.update(seconds)
+    snake.update(seconds, input)
   }
 
   function getState() {
@@ -32,7 +32,9 @@ function Snake() {
     getState
   }
 
-  function update(seconds) {
+  function update(seconds, input) {
+    if (input.left) state.clockwise = false
+    else if (input.right) state.clockwise = true
     const sign = state.clockwise ? 1 : -1
     state.direction += turnSpeed * seconds * sign
     const dist = speed * seconds * state.size
