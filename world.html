@@ -19,7 +19,86 @@
     <canvas id='display'></canvas>
     <script>
 
+    main()
 
+    function main() {
+      const game = Game()
+      const renderer = Renderer(document.getElementById('display'))
+      const clock = Clock(60, game, renderer)
+    }
+
+    function Clock(fps, game, renderer) {
+      const fixedStep = 1000 / fps
+      let timeBuffer = 0
+      let ticks = [ performance.now() ]
+      frame()
+
+      function frame() {
+        ticks.unshift(performance.now())
+        const step = ticks.pop() - ticks[0]
+        timeBuffer += step
+        while (timeBuffer >= fixedStep) {
+          game.update(fixedStep)
+          timeBuffer -= fixedStep
+        }
+        renderer.render(game.state, step)
+        requestAnimationFrame(frame)
+      }
+    }
+
+    function Game() {
+      const snake = Snake()
+
+      return {
+        get state() {
+          return { snake: snake.state }
+        }
+      }
+    }
+
+    function Renderer(canvas) {
+      const ctx = canvas.getContext('2d')
+      window.addEventListener('resize', fit);
+      fit()
+
+      return {
+        render
+      }
+
+      function fit() {
+        canvas.width = document.body.clientWidth;
+        canvas.height = document.body.clientHeight;
+      }
+
+      function render(state) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        renderSnake(state.snake)
+      }
+
+      function renderSnake(state) {
+        const pos = state.position[0]
+        ctx.fillStyle = 'red'
+        ctx.beginPath()
+        ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2)
+        ctx.closePath()
+        ctx.fill()
+      }
+    }
+
+    function Snake() {
+      let state = {
+        position: [{ x: 0, y: 0 }]
+      }
+
+      return {
+        update,
+        get state() { return state }
+      }
+
+      function update(time) {
+
+      }
+    }
 
     </script>
   </body>
