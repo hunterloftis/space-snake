@@ -25,6 +25,7 @@ function Renderer(canvas) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.translate(center.x - cam.x, center.y - cam.y)
+    ctx.scale(cam.zoom, cam.zoom)
     renderStars()
     renderBodies(state.bodies)
     renderSnake(state.snake)
@@ -53,17 +54,23 @@ function Renderer(canvas) {
 }
 
 function Camera() {
-  const state = { x: 0, y: 0 }
+  const neutralScale = 15
+  const sizeWeight = 0.5
+  const state = { x: 0, y: 0, zoom: 1 }
 
   return {
     update
   }
 
-  function update(snake, seconds) {
-    const delta = { x: snake.x - state.x, y: snake.y - state.y }
+  function update(target, seconds) {
+    const targetZoom = (neutralScale / target.size * sizeWeight) + (1 - sizeWeight)
+    const delta = {
+      x: target.x - state.x,
+      y: target.y - state.y,
+      zoom: targetZoom - state.zoom
+    }
     const correction = Math.min(seconds, 1)
-    state.x += delta.x * correction
-    state.y += delta.y * correction
+    Object.keys(state).forEach(key => state[key] += delta[key] * correction)
     return state
   }
 }
