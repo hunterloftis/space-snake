@@ -1,9 +1,12 @@
 const SUN_COLOR = '#ECFEAA'
-const BODY_COLOR = '#7798AB'
+const BODY_COLOR = '#23B5D3'
+const EATING_EFFICIENCY = 0.25
+const DAMAGE = 0.25
 
 function Game(input) {
-  const snake = Snake(400, 600, 5)
-  const bodies = Bodies(123, 9)
+  // const snake = Snake(400, 600, 5)
+  const snake = Snake(400, 600, 100)
+  const bodies = Bodies(123, 3)
   const particles = []  // expel particles on collisions that you can reclaim
 
   return {
@@ -34,18 +37,33 @@ function Bodies(seed, prewarm = 0) {
   while (bodies.length < 20) {
     let size = rand() * 15 + 5
     let orbit = distance() + size + 10 * spacing
-    let period = (rand() + 1) / 9000 * Math.PI * orbit * orbit
+    let period = (rand() + 1) / 50 * 2 * Math.PI * orbit
     let planet = Body(size, BODY_COLOR, orbit, period, sun)
     bodies.push(planet)
     let moons = Math.floor(rand() * 5) + 1
     while (moons-- > 0) {
       let size = rand() * 2 + 2
       let localOrbit = distance() - planet.distance + size + (rand() + 3) * spacing
-      let period = rand() * 5 + 3
+      let period = rand() * 5 + 4
       let moon = Body(size, BODY_COLOR, localOrbit, period, planet)
       bodies.push(moon)
     }
   }
+
+  // dangerous asteroid belt
+  while (bodies.length < 50) {
+    let size = Math.sqrt(rand() * 800)
+    let orbit = distance() + size + spacing
+    let period = (rand() + 3) / 2000 * 2 * Math.PI * orbit
+    let asteroid = Body(size, BODY_COLOR, orbit, period, sun)
+    bodies.push(asteroid)
+  }
+
+  // large planets with defenses
+  let planet = Body(300, BODY_COLOR, distance() + 500, 60, sun)
+  bodies.push(planet)
+  let moon = Body(100, BODY_COLOR, 600, 20, planet)
+  bodies.push(moon)
 
   bodies.forEach(body => body.update(prewarm))
   return bodies
@@ -69,6 +87,7 @@ function Snake(x, y, size) {
     position: [{ x, y }],
     direction: 0,
     clockwise: true,
+    damage: 0,
     size
   }
 
@@ -78,12 +97,11 @@ function Snake(x, y, size) {
   }
 
   function update(seconds, input, bodies) {
+    if (state.damage >= 1) return
     move(seconds, input)
     const collisions = bodies.filter(isColliding)
     const obstacles = collisions.filter(eat)
-    if (obstacles.length && state.size > 5) {
-      state.size -= seconds * 5
-    }
+    state.damage += seconds * obstacles.length * DAMAGE
   }
 
   function move(seconds, input) {
@@ -144,7 +162,7 @@ function Body(size, color='#80FFEC', orbit=0, period=1, parent) {
       }
     },
     consume() {
-      let consumed = size * 0.2
+      let consumed = size * EATING_EFFICIENCY
       size = 0
       return consumed
     },

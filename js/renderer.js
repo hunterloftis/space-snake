@@ -22,14 +22,17 @@ function Renderer(canvas) {
   function render(state, seconds) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
     const cam = camera.update(state.snake, seconds)
-    // cam.zoom = 0.2
+    const parallax = 0.25 * cam.zoom
+    // cam.zoom = 0.25
     ctx.fillStyle = '#272B3D'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.save()
-    ctx.translate(center.x - cam.x * 0.2, center.y - cam.y * 0.2)
+    ctx.translate(center.x, center.y)
+    ctx.translate(-cam.x * parallax, -cam.y * parallax)
     renderStars()
+    ctx.translate(cam.x * parallax, cam.y * parallax)
     ctx.scale(cam.zoom, cam.zoom)
-    ctx.translate(-cam.x * 0.8, -cam.y * 0.8)
+    ctx.translate(-cam.x, -cam.y)
     renderBodies(state.bodies)
     renderSnake(state.snake)
     ctx.restore()
@@ -45,7 +48,8 @@ function Renderer(canvas) {
 
   function renderSnake(snake) {
     circle(snake.x, snake.y, snake.size, '#fff')
-    snake.position.slice(3).forEach(pos => circle(pos.x, pos.y, snake.size, '#DB162F'))
+    snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, snake.size, '#EC4E20'))
+    circle(snake.x, snake.y, snake.size * snake.damage, '#000')
   }
 
   function circle(x, y, r, color) {
@@ -58,8 +62,7 @@ function Renderer(canvas) {
 }
 
 function Camera() {
-  const neutralScale = 15
-  const sizeWeight = 0.5
+  const neutralScale = 10
   const state = { x: 0, y: 0, zoom: 1 }
 
   return {
@@ -67,7 +70,7 @@ function Camera() {
   }
 
   function update(target, seconds) {
-    const targetZoom = (neutralScale / target.size * sizeWeight) + (1 - sizeWeight)
+    const targetZoom = neutralScale / target.size
     const delta = {
       x: target.x - state.x,
       y: target.y - state.y,
