@@ -42,7 +42,8 @@ function Renderer(canvas) {
   }
 
   function renderSnake(snake) {
-    snake.position.forEach(pos => circle(pos.x, pos.y, snake.size, '#f0f'))
+    circle(snake.x, snake.y, snake.size, '#fff')
+    snake.position.slice(3).forEach(pos => circle(pos.x, pos.y, snake.size, '#f0f'))
   }
 
   function circle(x, y, r, color) {
