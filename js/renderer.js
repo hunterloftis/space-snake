@@ -4,7 +4,7 @@ function Renderer(canvas) {
   const stars = new Array(1000).fill(null).map(star => ({
     x: Math.random() * 2000 - 1000,
     y: Math.random() * 2000 - 1000,
-    size: Math.random() * 2,
+    size: Math.random() * 1,
     color: 'white'
   }))
   window.addEventListener('resize', fit)
@@ -24,9 +24,10 @@ function Renderer(canvas) {
     const cam = camera.update(state.snake, seconds)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
-    ctx.translate(center.x - cam.x, center.y - cam.y)
-    ctx.scale(cam.zoom, cam.zoom)
+    ctx.translate(center.x - cam.x * 0.5, center.y - cam.y * 0.5)
     renderStars()
+    ctx.translate(-cam.x * 0.5, -cam.y * 0.5)
+    ctx.scale(cam.zoom, cam.zoom)
     renderBodies(state.bodies)
     renderSnake(state.snake)
     ctx.restore()
