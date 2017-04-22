@@ -22,6 +22,7 @@ function Renderer(canvas) {
   function render(state, seconds) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
     const cam = camera.update(state.snake, seconds)
+    // cam.zoom = 0.2
     ctx.fillStyle = '#272B3D'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.save()

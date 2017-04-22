@@ -1,11 +1,9 @@
+const SUN_COLOR = '#ECFEAA'
+const BODY_COLOR = '#7798AB'
+
 function Game(input) {
   const snake = Snake(400, 600, 5)
-  const sun = Body(650, '#ECFEAA')
-  const planet = Body(12, '#7798AB', 720, 80, sun)
-  const planet2 = Body(18, '#7798AB', 900, 160, sun)
-  const asteroid = Body(5, '#7798AB', 50, 5, planet2)
-  const asteroid2 = Body(3, '#7798AB', 100, 6, planet2)
-  const bodies = [ sun, planet, planet2, asteroid, asteroid2 ]
+  const bodies = Bodies(123, 9)
   const particles = []  // expel particles on collisions that you can reclaim
 
   return {
@@ -23,6 +21,44 @@ function Game(input) {
       snake: snake.getState(),
       bodies: bodies.map(body => body.getState())
     }
+  }
+}
+
+function Bodies(seed, prewarm = 0) {
+  const rand = Random(seed)
+  const sun = Body(650, '#ECFEAA')
+  const bodies = [ sun ]
+  const spacing = 10
+
+  // small planets near the sun
+  while (bodies.length < 20) {
+    let size = rand() * 15 + 5
+    let orbit = distance() + size + 10 * spacing
+    let period = (rand() + 1) / 9000 * Math.PI * orbit * orbit
+    let planet = Body(size, BODY_COLOR, orbit, period, sun)
+    bodies.push(planet)
+    let moons = Math.floor(rand() * 5) + 1
+    while (moons-- > 0) {
+      let size = rand() * 2 + 2
+      let localOrbit = distance() - planet.distance + size + (rand() + 3) * spacing
+      let period = rand() * 5 + 3
+      let moon = Body(size, BODY_COLOR, localOrbit, period, planet)
+      bodies.push(moon)
+    }
+  }
+
+  bodies.forEach(body => body.update(prewarm))
+  return bodies
+
+  function distance() {
+    return bodies.reduce((max, body) => Math.max(max, body.distance), 0)
+  }
+}
+
+function Random(seed) {
+  return () => {
+    const x = Math.sin(seed++) * 10000
+    return x - Math.floor(x)
   }
 }
 
@@ -103,11 +139,12 @@ function Body(size, color='#80FFEC', orbit=0, period=1, parent) {
         x: origin.x + Math.cos(angle) * orbit,
         y: origin.y + Math.sin(angle) * orbit,
         size,
-        color
+        color,
+        orbit
       }
     },
     consume() {
-      let consumed = size * 0.5
+      let consumed = size * 0.2
       size = 0
       return consumed
     },
@@ -116,6 +153,10 @@ function Body(size, color='#80FFEC', orbit=0, period=1, parent) {
     },
     isLargerThan(otherSize) {
       return size >= otherSize
+    },
+    get distance() {
+      if (!parent) return size
+      if (parent) return orbit + size + parent.distance - parent.getState().size
     }
   }
   return instance
