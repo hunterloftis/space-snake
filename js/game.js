@@ -43,7 +43,10 @@ function Snake(x, y) {
   function update(seconds, input, bodies) {
     move(seconds, input)
     const collisions = bodies.filter(isColliding)
-    collisions.forEach(eat)
+    const obstacles = collisions.filter(eat)
+    if (obstacles.length && state.size > 5) {
+      state.size -= seconds * 5
+    }
   }
 
   function move(seconds, input) {
@@ -72,8 +75,9 @@ function Snake(x, y) {
   }
 
   function eat(body) {
-    if (body.isLargerThan(state.size)) return
+    if (body.isLargerThan(state.size)) return true
     state.size += body.consume()
+    return false
   }
 
   function getState() {
