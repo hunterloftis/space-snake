@@ -1,9 +1,9 @@
 function Renderer(canvas) {
   const ctx = canvas.getContext('2d')
   const camera = Camera()
-  const stars = new Array(1000).fill(null).map(star => ({
-    x: Math.random() * 2000 - 1000,
-    y: Math.random() * 2000 - 1000,
+  const stars = new Array(2000).fill(null).map(star => ({
+    x: Math.random() * 3000 - 1500,
+    y: Math.random() * 3000 - 1500,
     size: Math.random() * 1,
     color: 'white'
   }))

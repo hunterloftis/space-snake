@@ -1,8 +1,8 @@
 function Game(input) {
-  const snake = Snake(-500, 0)
-  const planet = Body(150)
-  const moon = Body(12, 220, 10, planet)
-  const moon2 = Body(18, 400, 30, planet)
+  const snake = Snake(300, 650)
+  const planet = Body(650)
+  const moon = Body(12, 720, 80, planet)
+  const moon2 = Body(18, 900, 160, planet)
   const asteroid = Body(5, 50, 5, moon2)
   const asteroid2 = Body(3, 100, 6, moon2)
   const bodies = [ planet, moon, moon2, asteroid, asteroid2 ]
