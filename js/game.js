@@ -1,11 +1,11 @@
 function Game(input) {
   const snake = Snake(400, 600, 5)
-  const planet = Body(650)
-  const moon = Body(12, 720, 80, planet)
-  const moon2 = Body(18, 900, 160, planet)
-  const asteroid = Body(5, 50, 5, moon2)
-  const asteroid2 = Body(3, 100, 6, moon2)
-  const bodies = [ planet, moon, moon2, asteroid, asteroid2 ]
+  const sun = Body(650, '#ECFEAA')
+  const planet = Body(12, '#7798AB', 720, 80, sun)
+  const planet2 = Body(18, '#7798AB', 900, 160, sun)
+  const asteroid = Body(5, '#7798AB', 50, 5, planet2)
+  const asteroid2 = Body(3, '#7798AB', 100, 6, planet2)
+  const bodies = [ sun, planet, planet2, asteroid, asteroid2 ]
   const particles = []  // expel particles on collisions that you can reclaim
 
   return {
@@ -89,7 +89,7 @@ function Snake(x, y, size) {
   }
 }
 
-function Body(size, orbit=0, period=1, parent) {
+function Body(size, color='#80FFEC', orbit=0, period=1, parent) {
   let angle = 0
   const speed = Math.PI * 2 / period
   const instance = {
@@ -102,7 +102,8 @@ function Body(size, orbit=0, period=1, parent) {
       return {
         x: origin.x + Math.cos(angle) * orbit,
         y: origin.y + Math.sin(angle) * orbit,
-        size: size
+        size,
+        color
       }
     },
     consume() {

@@ -1,7 +1,7 @@
 function Renderer(canvas) {
   const ctx = canvas.getContext('2d')
   const camera = Camera()
-  const stars = new Array(2000).fill(null).map(star => ({
+  const stars = new Array(1000).fill(null).map(star => ({
     x: Math.random() * 3000 - 1500,
     y: Math.random() * 3000 - 1500,
     size: Math.random() * 1,
@@ -22,7 +22,8 @@ function Renderer(canvas) {
   function render(state, seconds) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
     const cam = camera.update(state.snake, seconds)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = '#272B3D'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.translate(center.x - cam.x * 0.2, center.y - cam.y * 0.2)
     renderStars()
@@ -38,12 +39,12 @@ function Renderer(canvas) {
   }
 
   function renderBodies(bodies) {
-    bodies.forEach(body => circle(body.x, body.y, body.size, '#0ff'))
+    bodies.forEach(body => circle(body.x, body.y, body.size, body.color))
   }
 
   function renderSnake(snake) {
     circle(snake.x, snake.y, snake.size, '#fff')
-    snake.position.slice(3).forEach(pos => circle(pos.x, pos.y, snake.size, '#f0f'))
+    snake.position.slice(3).forEach(pos => circle(pos.x, pos.y, snake.size, '#DB162F'))
   }
 
   function circle(x, y, r, color) {
