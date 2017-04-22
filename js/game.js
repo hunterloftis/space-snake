@@ -2,23 +2,38 @@ function Game() {
   const snake = Snake()
 
   return {
-    get state() {
-      return { snake: snake.state }
+    update,
+    getState
+  }
+
+  function update(seconds) {
+    snake.update(seconds)
+  }
+
+  function getState() {
+    return {
+      snake: snake.getState()
     }
   }
 }
 
 function Snake() {
-  let state = {
-    position: [{ x: 0, y: 0 }]
-  }
+  const position = [{ x: 0, y: 0 }]
 
   return {
     update,
-    get state() { return state }
+    getState
   }
 
-  function update(time) {
+  function update(seconds) {
+    position[0].x += seconds * 100
+  }
 
+  function getState() {
+    return {
+      position,
+      x: position[0].x,
+      y: position[0].y
+    }
   }
 }
