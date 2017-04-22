@@ -1,11 +1,12 @@
 function Game(input) {
-  const snake = Snake(300, 650)
+  const snake = Snake(400, 600, 5)
   const planet = Body(650)
   const moon = Body(12, 720, 80, planet)
   const moon2 = Body(18, 900, 160, planet)
   const asteroid = Body(5, 50, 5, moon2)
   const asteroid2 = Body(3, 100, 6, moon2)
   const bodies = [ planet, moon, moon2, asteroid, asteroid2 ]
+  const particles = []  // expel particles on collisions that you can reclaim
 
   return {
     update,
@@ -25,14 +26,14 @@ function Game(input) {
   }
 }
 
-function Snake(x, y) {
+function Snake(x, y, size) {
   const turnSpeed = Math.PI
   const speed = 10
   const state = {
     position: [{ x, y }],
     direction: 0,
     clockwise: true,
-    size: 10
+    size
   }
 
   return {
