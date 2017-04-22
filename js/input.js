@@ -4,11 +4,12 @@ function Input() {
   return state
 
   function onKey(e) {
-    Object.assign(state, {
-      left: e.keyCode === 37,
-      right: e.keyCode === 39
-    })
-    e.preventDefault && e.preventDefault()
-    e.stopPropagation && e.stopPropagation()
+    const left = e.keyCode === 37
+    const right = e.keyCode === 39
+    if (left || right) {
+      Object.assign(state, { left, right })
+      e.preventDefault && e.preventDefault()
+      e.stopPropagation && e.stopPropagation()
+    }
   }
 }

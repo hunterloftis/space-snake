@@ -4,7 +4,7 @@ function Renderer(canvas) {
   const stars = new Array(1000).fill(null).map(star => ({
     x: Math.random() * 2000 - 1000,
     y: Math.random() * 2000 - 1000,
-    r: Math.random() * 2,
+    size: Math.random() * 2,
     color: 'white'
   }))
   window.addEventListener('resize', fit)
@@ -26,16 +26,21 @@ function Renderer(canvas) {
     ctx.save()
     ctx.translate(center.x - cam.x, center.y - cam.y)
     renderStars()
+    renderBodies(state.bodies)
     renderSnake(state.snake)
     ctx.restore()
   }
 
   function renderStars() {
-    stars.forEach(star => circle(star.x, star.y, star.r, star.color))
+    stars.forEach(star => circle(star.x, star.y, star.size, star.color))
+  }
+
+  function renderBodies(bodies) {
+    bodies.forEach(body => circle(body.x, body.y, body.size, '#0ff'))
   }
 
   function renderSnake(snake) {
-    snake.position.forEach(pos => circle(pos.x, pos.y, snake.size, 'red'))
+    snake.position.forEach(pos => circle(pos.x, pos.y, snake.size, '#f0f'))
   }
 
   function circle(x, y, r, color) {
