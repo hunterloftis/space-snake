@@ -51,10 +51,50 @@ function Renderer(canvas) {
   }
 
   function renderSnake(snake) {
+    renderAntenna(snake, 0.2, snake.size * 2.5)
+    renderAntenna(snake, 0.4, snake.size * 2)
+    renderSpine(snake, 0.03, snake.size * 3)
+    renderSpine(snake, 0.1, snake.size * 4)
+    renderLegs(snake)
     circle(snake.x, snake.y, snake.size, SNAKE_HEAD_COLOR)
     snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, SNAKE_COLOR))
     circle(snake.x, snake.y, snake.size * snake.damage, SPACE_COLOR)
     snake.particles.forEach(particle => circle(particle.x, particle.y, particle.size, SNAKE_COLOR))
+  }
+
+  function renderLegs(snake) {
+    const size = snake.size * 0.25
+    for (var i = 0.33; i <= 0.66; i += 0.11) {
+      let segment = Math.floor(i * snake.position.length)
+      let pos = snake.position[segment]
+      let left = angled(pos.x, pos.y, pos.direction - Math.PI * 0.5, pos.size + size)
+      let right = angled(pos.x, pos.y, pos.direction + Math.PI * 0.5, pos.size + size)
+      circle(left.x, left.y, size, SNAKE_COLOR)
+      circle(right.x, right.y, size, SNAKE_COLOR)
+    }
+  }
+
+  function renderAntenna(snake, tilt, size) {
+    const antennaL = angled(snake.x, snake.y, snake.direction - Math.PI * tilt, size)
+    const antennaR = angled(snake.x, snake.y, snake.direction + Math.PI * tilt, size)
+    line(snake.x, snake.y, antennaL.x, antennaL.y, SNAKE_COLOR, snake.size * 0.2)
+    line(snake.x, snake.y, antennaR.x, antennaR.y, SNAKE_COLOR, snake.size * 0.2)
+  }
+
+  function renderSpine(snake, tilt, size) {
+    const pos = snake.position
+    const tail = pos.length - 1
+    const spineL = angled(pos[tail].x, pos[tail].y, pos[tail].direction + Math.PI - Math.PI * tilt, size)
+    const spineR = angled(pos[tail].x, pos[tail].y, pos[tail].direction + Math.PI + Math.PI * tilt, size)
+    line(pos[tail].x, pos[tail].y, spineL.x, spineL.y, SNAKE_COLOR, pos[tail].size * 0.2)
+    line(pos[tail].x, pos[tail].y, spineR.x, spineR.y, SNAKE_COLOR, pos[tail].size * 0.2)
+  }
+
+  function angled(x0, y0, angle, distance) {
+    return {
+      x: x0 + Math.cos(angle) * distance,
+      y: y0 + Math.sin(angle) * distance
+    }
   }
 
   function renderShips(ships, seconds) {
@@ -82,14 +122,6 @@ function Renderer(canvas) {
         ctx.lineTo(bullet.x + Math.cos(bullet.angle) * len, bullet.y + Math.sin(bullet.angle) * len)
       })
       ctx.stroke()
-      // const testX = ship.x + Math.cos(ship.angle) * ship.size * 100
-      // const testY = ship.y + Math.sin(ship.angle) * ship.size * 100
-      // ctx.beginPath()
-      // ctx.moveTo(noseX, noseY)
-      // ctx.lineTo(testX, testY)
-      // ctx.strokeStyle = '#fff'
-      // ctx.lineWidth = 1
-      // ctx.stroke()
     })
   }
 
@@ -99,6 +131,15 @@ function Renderer(canvas) {
     ctx.arc(x, y, r, 0, Math.PI * 2)
     ctx.closePath()
     ctx.fill()
+  }
+
+  function line(x1, y1, x2, y2, color, width=2) {
+    ctx.strokeStyle = color
+    ctx.lineWidth = width
+    ctx.beginPath()
+    ctx.moveTo(x1, y1)
+    ctx.lineTo(x2, y2)
+    ctx.stroke()
   }
 }
 

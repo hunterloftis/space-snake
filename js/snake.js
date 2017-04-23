@@ -3,14 +3,15 @@ function Snake(x, y, size) {
   const speed = 10
   let nextParticle = 0
   const snake = {
-    position: [{ x, y, size }],
+    position: [{ x, y, size, direction: 0 }],
     get x() { return this.position[0].x },
     get y() { return this.position[0].y },
     get size() { return this.position[0].size },
     set size(n) { this.position[0].size = n },
     get moveSpeed() { return speed * this.size },
+    get direction() { return this.position[0].direction },
+    set direction(n) { this.position[0].direction = n },
     particles: [],
-    direction: 0,
     clockwise: true,
     damage: 0,
     update,
@@ -73,7 +74,8 @@ function Snake(x, y, size) {
     snake.position.unshift({
       x: snake.x + dx,
       y: snake.y + dy,
-      size: snake.size
+      size: snake.size,
+      direction: snake.direction
     })
     snake.position.splice(100)
   }
