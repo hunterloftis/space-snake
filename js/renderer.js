@@ -1,4 +1,8 @@
+const SPACE_COLOR = '#272B3D'
 const SHIP_COLOR = '#F6F8FF'
+const SNAKE_COLOR = '#EC4E20'
+const SNAKE_HEAD_COLOR = '#fff'
+const BULLET_COLOR = '#fff'
 
 function Renderer(canvas) {
   const ctx = canvas.getContext('2d')
@@ -23,7 +27,7 @@ function Renderer(canvas) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
     camera.update(state.snake, seconds)
     const parallax = 0.25 * camera.zoom
-    ctx.fillStyle = '#272B3D'
+    ctx.fillStyle = SPACE_COLOR
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.translate(center.x, center.y)
@@ -47,9 +51,9 @@ function Renderer(canvas) {
   }
 
   function renderSnake(snake) {
-    circle(snake.x, snake.y, snake.size, '#fff')
-    snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, '#EC4E20'))
-    circle(snake.x, snake.y, snake.size * snake.damage, '#fff')
+    circle(snake.x, snake.y, snake.size, SNAKE_HEAD_COLOR)
+    snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, SNAKE_COLOR))
+    circle(snake.x, snake.y, snake.size * snake.damage, SPACE_COLOR)
   }
 
   function renderShips(ships, seconds) {
@@ -68,7 +72,7 @@ function Renderer(canvas) {
       ctx.closePath()
       ctx.fill()
 
-      ctx.strokeStyle = '#fff'
+      ctx.strokeStyle = BULLET_COLOR
       ctx.lineWidth = 10
       ctx.beginPath()
       ship.bullets.forEach(bullet => {
