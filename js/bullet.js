@@ -16,7 +16,7 @@ function Bullet(x, y, angle) {
     bullet.y += Math.sin(bullet.angle) * speed * seconds
     bullet.life -= seconds
     if (snake.distanceFrom(bullet.x, bullet.y) < snake.size) {
-      snake.takeDamage(0.02)
+      snake.takeDamage(0.015)
       bullet.life = 0
     }
   }

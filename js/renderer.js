@@ -51,19 +51,19 @@ function Renderer(canvas) {
   }
 
   function renderSnake(snake) {
-    renderAntenna(snake, 0.2, snake.size * 2.5)
-    renderAntenna(snake, 0.4, snake.size * 2)
-    renderSpine(snake, 0.03, snake.size * 3)
-    renderSpine(snake, 0.1, snake.size * 4)
-    renderLegs(snake)
+    const evo = snake.evolution
+    renderAntenna(snake, 0.2, snake.size * 2.5 * evo)
+    renderAntenna(snake, 0.4, snake.size * 2 * evo)
+    renderSpine(snake, 0.03, snake.size * 3 * evo)
+    renderSpine(snake, 0.1, snake.size * 4 * evo)
+    renderLegs(snake, snake.size * 0.25 * evo)
     circle(snake.x, snake.y, snake.size, SNAKE_HEAD_COLOR)
     snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, SNAKE_COLOR))
     circle(snake.x, snake.y, snake.size * snake.damage, SPACE_COLOR)
     snake.particles.forEach(particle => circle(particle.x, particle.y, particle.size, SNAKE_COLOR))
   }
 
-  function renderLegs(snake) {
-    const size = snake.size * 0.25
+  function renderLegs(snake, size) {
     for (var i = 0.33; i <= 0.66; i += 0.11) {
       let segment = Math.floor(i * snake.position.length)
       let pos = snake.position[segment]

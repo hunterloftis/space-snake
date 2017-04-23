@@ -11,6 +11,7 @@ function Snake(x, y, size) {
     get moveSpeed() { return speed * this.size },
     get direction() { return this.position[0].direction },
     set direction(n) { this.position[0].direction = n },
+    get evolution() { return Math.min(this.size / 50, 1) },
     particles: [],
     clockwise: true,
     damage: 0,
