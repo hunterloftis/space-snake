@@ -12,9 +12,7 @@ function Renderer(canvas) {
   window.addEventListener('resize', fit)
   fit()
 
-  return {
-    render
-  }
+  return { render }
 
   function fit() {
     canvas.width = document.body.clientWidth;
@@ -23,18 +21,17 @@ function Renderer(canvas) {
 
   function render(state, seconds) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
-    const cam = camera.update(state.snake, seconds)
-    const parallax = 0.25 * cam.zoom
-    // cam.zoom = 0.25
+    camera.update(state.snake, seconds)
+    const parallax = 0.25 * camera.zoom
     ctx.fillStyle = '#272B3D'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.translate(center.x, center.y)
-    ctx.translate(-cam.x * parallax, -cam.y * parallax)
+    ctx.translate(-camera.x * parallax, -camera.y * parallax)
     renderStars()
-    ctx.translate(cam.x * parallax, cam.y * parallax)
-    ctx.scale(cam.zoom, cam.zoom)
-    ctx.translate(-cam.x, -cam.y)
+    ctx.translate(camera.x * parallax, camera.y * parallax)
+    ctx.scale(camera.zoom, camera.zoom)
+    ctx.translate(-camera.x, -camera.y)
     renderBodies(state.bodies)
     renderSnake(state.snake)
     renderShips(state.ships)
@@ -57,8 +54,6 @@ function Renderer(canvas) {
 
   function renderShips(ships) {
     ships.forEach(ship => {
-      const testX = ship.x + Math.cos(ship.angle) * ship.size * 100
-      const testY = ship.y + Math.sin(ship.angle) * ship.size * 100
       const noseX = ship.x + Math.cos(ship.angle) * ship.size
       const noseY = ship.y + Math.sin(ship.angle) * ship.size
       const lWingX = ship.x + Math.cos(ship.angle + Math.PI * 0.80) * ship.size
@@ -72,12 +67,15 @@ function Renderer(canvas) {
       ctx.lineTo(lWingX, lWingY)
       ctx.closePath()
       ctx.fill()
-      ctx.beginPath()
-      ctx.moveTo(noseX, noseY)
-      ctx.lineTo(testX, testY)
-      ctx.strokeStyle = '#fff'
-      ctx.lineWidth = 1
-      ctx.stroke()
+
+      // const testX = ship.x + Math.cos(ship.angle) * ship.size * 100
+      // const testY = ship.y + Math.sin(ship.angle) * ship.size * 100
+      // ctx.beginPath()
+      // ctx.moveTo(noseX, noseY)
+      // ctx.lineTo(testX, testY)
+      // ctx.strokeStyle = '#fff'
+      // ctx.lineWidth = 1
+      // ctx.stroke()
     })
   }
 
@@ -92,21 +90,25 @@ function Renderer(canvas) {
 
 function Camera() {
   const neutralScale = 10
-  const state = { x: 0, y: 0, zoom: 1 }
-
-  return {
+  const camera = {
+    x: 0,
+    y: 0,
+    zoom: 1,
     update
   }
+
+  return camera
 
   function update(target, seconds) {
     const targetZoom = (neutralScale / target.size * 0.95) + 0.05
     const delta = {
-      x: target.x - state.x,
-      y: target.y - state.y,
-      zoom: targetZoom - state.zoom
+      x: target.x - camera.x,
+      y: target.y - camera.y,
+      zoom: targetZoom - camera.zoom
     }
     const correction = Math.min(seconds, 1)
-    Object.keys(state).forEach(key => state[key] += delta[key] * correction)
-    return state
+    camera.x += delta.x * correction
+    camera.y += delta.y * correction
+    camera.zoom += delta.zoom * correction
   }
 }
