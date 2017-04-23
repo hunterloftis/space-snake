@@ -56,6 +56,7 @@ function Random(seed) {
 }
 
 function Ship(home, orbit, angle = 0, size=50) {
+  const speed = Math.random() * 12 + 3
   let state = {
     orbiting: true,
     x: undefined,
@@ -97,13 +98,14 @@ function Ship(home, orbit, angle = 0, size=50) {
     const snakeState = snake.getState()
     const dx = snakeState.x - state.x
     const dy = snakeState.y - state.y
-    const targetAngle = Math.atan2(-dy, -dx)
-    const fromAngle = mod(state.angle, Math.PI * 2)
-    const diff = mod(fromAngle - targetAngle + Math.PI, Math.PI * 2) - Math.PI
-    const correction = diff < -Math.PI ? diff + Math.PI * 2 : diff
-    state.angle += correction * seconds
-    state.x += Math.cos(state.angle) * state.size * 20 * seconds
-    state.y += Math.sin(state.angle) * state.size * 20 * seconds
+    const targetAngle = Math.atan2(dy, dx)
+    state.angle = targetAngle
+    // const fromAngle = mod(state.angle, Math.PI * 2)
+    // const diff = mod(fromAngle - targetAngle + Math.PI, Math.PI * 2) - Math.PI
+    // const correction = diff < -Math.PI ? diff + Math.PI * 2 : diff
+    // state.angle += correction * seconds
+    state.x += Math.cos(state.angle) * state.size * speed * seconds
+    state.y += Math.sin(state.angle) * state.size * speed * seconds
   }
 }
 
