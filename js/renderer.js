@@ -54,6 +54,7 @@ function Renderer(canvas) {
     circle(snake.x, snake.y, snake.size, SNAKE_HEAD_COLOR)
     snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, SNAKE_COLOR))
     circle(snake.x, snake.y, snake.size * snake.damage, SPACE_COLOR)
+    snake.particles.forEach(particle => circle(particle.x, particle.y, particle.size, SNAKE_COLOR))
   }
 
   function renderShips(ships, seconds) {

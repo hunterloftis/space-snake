@@ -1,6 +1,7 @@
 function Snake(x, y, size) {
   const turnSpeed = Math.PI
   const speed = 10
+  let nextParticle = 0
   const snake = {
     position: [{ x, y, size }],
     get x() { return this.position[0].x },
@@ -8,6 +9,7 @@ function Snake(x, y, size) {
     get size() { return this.position[0].size },
     set size(n) { this.position[0].size = n },
     get moveSpeed() { return speed * this.size },
+    particles: [],
     direction: 0,
     clockwise: true,
     damage: 0,
@@ -30,15 +32,34 @@ function Snake(x, y, size) {
   }
 
   function update(seconds, input, bodies, ships) {
+    updateParticles(seconds)
     if (snake.damage >= 1) return
     move(seconds, input)
     hitBodies(seconds, bodies)
+  }
+
+  function updateParticles(seconds) {
+    snake.particles = snake.particles.filter(particle => particle.life > 0)
+    snake.particles.forEach(particle => particle.update(seconds))
   }
 
   function hitBodies(seconds, bodies) {
     const collisions = bodies.filter(isColliding)
     const obstacles = collisions.filter(eat)
     takeDamage(seconds * obstacles.length * DAMAGE)
+    if (performance.now() > nextParticle) {
+      const particles = obstacles.reduce((particles, body) => {
+        const direction = Math.atan2(body.y - snake.y, body.x - snake.x)
+        const x = snake.x + Math.cos(direction) * snake.size
+        const y = snake.y + Math.sin(direction) * snake.size
+        const speedX = Math.cos(snake.direction) * snake.size * -speed * Math.random()
+        const speedY = Math.sin(snake.direction) * snake.size * -speed * Math.random()
+        particles.push(Particle(x, y, snake.size * 0.3, speedX, speedY))
+        return particles
+      }, [])
+      snake.particles.push(...particles)
+      nextParticle = performance.now() + 25
+    }
   }
 
   function move(seconds, input) {
@@ -60,8 +81,8 @@ function Snake(x, y, size) {
   function isColliding(body) {
     if (body.isConsumed) return false
     const range = body.size + snake.size
-    const dx = body.x - snake.position[0].x
-    const dy = body.y - snake.position[0].y
+    const dx = body.x - snake.x
+    const dy = body.y - snake.y
     const dist = Math.sqrt(dx * dx + dy * dy)
     return dist < range
   }
@@ -75,5 +96,21 @@ function Snake(x, y, size) {
   function takeDamage(amount) {
     if (snake.damage >= 1) return
     snake.damage = Math.min(snake.damage + amount, 1)
+  }
+}
+
+function Particle(x, y, size, speedX, speedY) {
+  const particle = {
+    x, y, size,
+    life: 1,
+    update
+  }
+
+  return particle
+
+  function update(seconds) {
+    particle.x += speedX * seconds
+    particle.y += speedY * seconds
+    particle.life -= seconds
   }
 }
