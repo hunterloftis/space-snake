@@ -34,7 +34,7 @@ function Renderer(canvas) {
     ctx.translate(-camera.x, -camera.y)
     renderBodies(state.bodies)
     renderSnake(state.snake)
-    renderShips(state.ships)
+    renderShips(state.ships, seconds)
     ctx.restore()
   }
 
@@ -52,7 +52,7 @@ function Renderer(canvas) {
     circle(snake.x, snake.y, snake.size * snake.damage, '#fff')
   }
 
-  function renderShips(ships) {
+  function renderShips(ships, seconds) {
     ships.forEach(ship => {
       const noseX = ship.x + Math.cos(ship.angle) * ship.size
       const noseY = ship.y + Math.sin(ship.angle) * ship.size
@@ -68,6 +68,17 @@ function Renderer(canvas) {
       ctx.closePath()
       ctx.fill()
 
+      ctx.strokeStyle = '#fff'
+      ctx.lineWidth = 10
+      ctx.beginPath()
+      ship.bullets.forEach(bullet => {
+        // console.log(ship.bullets)
+        // debugger
+        const len = -bullet.speed * seconds
+        ctx.moveTo(bullet.x, bullet.y)
+        ctx.lineTo(bullet.x + Math.cos(bullet.angle) * len, bullet.y + Math.sin(bullet.angle) * len)
+      })
+      ctx.stroke()
       // const testX = ship.x + Math.cos(ship.angle) * ship.size * 100
       // const testY = ship.y + Math.sin(ship.angle) * ship.size * 100
       // ctx.beginPath()

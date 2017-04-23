@@ -1,13 +1,15 @@
 function Ship(home, orbit, angle = 0, size=50) {
-  const speed = Math.random() * 12 + 3
+  const speed = Math.random() * 0.5 + 0.3
   let cooldown = 0
   let ship = {
     orbiting: true,
     x: undefined,
     y: undefined,
+    bullets: [],
     angle,
     size,
-    update
+    update,
+    life: 1
   }
 
   return ship
@@ -16,7 +18,16 @@ function Ship(home, orbit, angle = 0, size=50) {
     searchFor(snake)
     followOrbit(seconds)
     followTarget(seconds, snake)
+    updateBullets(seconds, snake)
+    checkCollisions(snake)
     shootTarget(seconds, snake)
+  }
+
+  function checkCollisions(snake) {
+    if (snake.distanceFrom(ship.x, ship.y) < snake.size) {
+      snake.grow(ship.size * 1.5)
+      ship.life = 0
+    }
   }
 
   function searchFor(snake) {
@@ -40,14 +51,23 @@ function Ship(home, orbit, angle = 0, size=50) {
     if (ship.orbiting) return
     const dx = snake.x - ship.x
     const dy = snake.y - ship.y
+    const followSpeed = speed * snake.moveSpeed
     ship.angle = Math.atan2(dy, dx)
-    ship.x += Math.cos(ship.angle) * ship.size * speed * seconds
-    ship.y += Math.sin(ship.angle) * ship.size * speed * seconds
+    ship.x += Math.cos(ship.angle) * followSpeed * seconds
+    ship.y += Math.sin(ship.angle) * followSpeed * seconds
+  }
+
+  function updateBullets(seconds, snake) {
+    ship.bullets.forEach(bullet => bullet.update(seconds, snake))
+    ship.bullets = ship.bullets.filter(bullet => bullet.life > 0)
   }
 
   function shootTarget(seconds, snake) {
     if (ship.orbiting) return
-    if (snake.distanceFrom(ship.x, ship.y) > 50 * ship.size) return
-
+    if (snake.distanceFrom(ship.x, ship.y) > 20 * ship.size) return
+    cooldown -= seconds
+    if (cooldown > 0) return
+    ship.bullets.push(Bullet(ship.x, ship.y, ship.angle))
+    cooldown = 0.2
   }
 }

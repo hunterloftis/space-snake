@@ -4,9 +4,9 @@ const EATING_EFFICIENCY = 0.25
 const DAMAGE = 0.25
 
 function Game(input) {
-  const snake = Snake(400, 600, 5)
-  // const snake = Snake(400, 600, 100)
-  const [ bodies, ships ] = Bodies(123, 3)
+  // const snake = Snake(400, 600, 5)
+  let snake = Snake(400, 600, 100)
+  let [ bodies, ships ] = Bodies(123, 3)
   // const particles = []  // expel particles on collisions that you can reclaim
   const game = {
     snake,
@@ -14,12 +14,14 @@ function Game(input) {
     ships,
     update
   }
+  bodies = ships = snake = undefined // hack
 
   return game
 
   function update(seconds) {
-    bodies.forEach(body => body.update(seconds))
-    snake.update(seconds, input, bodies)
-    ships.forEach(ship => ship.update(seconds, snake))
+    game.bodies.forEach(body => body.update(seconds))
+    game.snake.update(seconds, input, game.bodies, game.ships)
+    game.ships.forEach(ship => ship.update(seconds, game.snake))
+    game.ships = game.ships.filter(ship => ship.life > 0)
   }
 }

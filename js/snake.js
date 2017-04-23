@@ -5,15 +5,22 @@ function Snake(x, y, size) {
     position: [{ x, y }],
     get x() { return this.position[0].x },
     get y() { return this.position[0].y },
+    get moveSpeed() { return speed * this.size },
     direction: 0,
     clockwise: true,
     damage: 0,
     size,
     update,
-    distanceFrom
+    distanceFrom,
+    takeDamage,
+    grow
   }
 
   return snake
+
+  function grow(mass) {
+    snake.size += mass * 0.25
+  }
 
   function distanceFrom(x, y) {
     const dx = x - snake.position[0].x
@@ -21,12 +28,16 @@ function Snake(x, y, size) {
     return Math.sqrt(dx * dx + dy * dy)
   }
 
-  function update(seconds, input, bodies) {
+  function update(seconds, input, bodies, ships) {
     if (snake.damage >= 1) return
     move(seconds, input)
+    hitBodies(seconds, bodies)
+  }
+
+  function hitBodies(seconds, bodies) {
     const collisions = bodies.filter(isColliding)
     const obstacles = collisions.filter(eat)
-    snake.damage += seconds * obstacles.length * DAMAGE
+    takeDamage(seconds * obstacles.length * DAMAGE)
   }
 
   function move(seconds, input) {
@@ -57,5 +68,10 @@ function Snake(x, y, size) {
     if (body.isLargerThan(snake.size)) return true
     snake.size += body.consume()
     return false
+  }
+
+  function takeDamage(amount) {
+    if (snake.damage >= 1) return
+    snake.damage = Math.min(snake.damage + amount, 1)
   }
 }
