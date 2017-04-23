@@ -7,7 +7,7 @@ function Clock(fps, game, renderer) {
 
   function frame() {
     ticks.unshift(performance.now())
-    const step = ticks[0] - ticks.pop()
+    const step = Math.min(ticks[0] - ticks.pop(), 250)
     timeBuffer += step
     while (timeBuffer >= fixedStep) {
       game.update(fixedStep * toSeconds)

@@ -1,9 +1,11 @@
+const SHIP_COLOR = '#F6F8FF'
+
 function Renderer(canvas) {
   const ctx = canvas.getContext('2d')
   const camera = Camera()
-  const stars = new Array(1000).fill(null).map(star => ({
-    x: Math.random() * 3000 - 1500,
-    y: Math.random() * 3000 - 1500,
+  const stars = new Array(500).fill(null).map(star => ({
+    x: Math.random() * 2000 - 1000,
+    y: Math.random() * 2000 - 1000,
     size: Math.random() * 1,
     color: 'white'
   }))
@@ -35,6 +37,7 @@ function Renderer(canvas) {
     ctx.translate(-cam.x, -cam.y)
     renderBodies(state.bodies)
     renderSnake(state.snake)
+    renderShips(state.ships)
     ctx.restore()
   }
 
@@ -49,7 +52,25 @@ function Renderer(canvas) {
   function renderSnake(snake) {
     circle(snake.x, snake.y, snake.size, '#fff')
     snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, snake.size, '#EC4E20'))
-    circle(snake.x, snake.y, snake.size * snake.damage, '#000')
+    circle(snake.x, snake.y, snake.size * snake.damage, '#fff')
+  }
+
+  function renderShips(ships) {
+    ships.forEach(ship => {
+      const noseX = ship.x + Math.cos(ship.angle) * 50
+      const noseY = ship.y + Math.sin(ship.angle) * 50
+      const lWingX = ship.x + Math.cos(ship.angle + Math.PI * 0.80) * 50
+      const lWingY = ship.y + Math.sin(ship.angle + Math.PI * 0.80) * 50
+      const rWingX = ship.x + Math.cos(ship.angle - Math.PI * 0.80) * 50
+      const rWingY = ship.y + Math.sin(ship.angle - Math.PI * 0.80) * 50
+      ctx.fillStyle = SHIP_COLOR
+      ctx.beginPath()
+      ctx.moveTo(noseX, noseY)
+      ctx.lineTo(rWingX, rWingY)
+      ctx.lineTo(lWingX, lWingY)
+      ctx.closePath()
+      ctx.fill()
+    })
   }
 
   function circle(x, y, r, color) {
@@ -70,7 +91,7 @@ function Camera() {
   }
 
   function update(target, seconds) {
-    const targetZoom = neutralScale / target.size
+    const targetZoom = (neutralScale / target.size * 0.95) + 0.05
     const delta = {
       x: target.x - state.x,
       y: target.y - state.y,
