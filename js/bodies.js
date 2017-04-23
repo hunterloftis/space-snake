@@ -55,13 +55,13 @@ function Random(seed) {
   }
 }
 
-function Ship(home, orbit, angle = 0) {
-  const velocity = 500
+function Ship(home, orbit, angle = 0, size=50) {
   let state = {
     orbiting: true,
     x: undefined,
     y: undefined,
-    angle
+    angle,
+    size
   }
   return {
     update,
@@ -77,7 +77,7 @@ function Ship(home, orbit, angle = 0) {
   function searchFor(snake) {
     if (!state.orbiting) return
     if (state.x !== undefined && state.y !== undefined) {
-      if (snake.distance(state.x, state.y) < 1200) {
+      if (snake.distance(state.x, state.y) < 40 * state.size) {
         state.orbiting = false
       }
     }
@@ -102,8 +102,8 @@ function Ship(home, orbit, angle = 0) {
     const diff = mod(fromAngle - targetAngle + Math.PI, Math.PI * 2) - Math.PI
     const correction = diff < -Math.PI ? diff + Math.PI * 2 : diff
     state.angle += correction * seconds
-    state.x += Math.cos(state.angle) * velocity * seconds
-    state.y += Math.sin(state.angle) * velocity * seconds
+    state.x += Math.cos(state.angle) * state.size * 20 * seconds
+    state.y += Math.sin(state.angle) * state.size * 20 * seconds
   }
 }
 

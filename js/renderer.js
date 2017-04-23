@@ -57,12 +57,14 @@ function Renderer(canvas) {
 
   function renderShips(ships) {
     ships.forEach(ship => {
-      const noseX = ship.x + Math.cos(ship.angle) * 50
-      const noseY = ship.y + Math.sin(ship.angle) * 50
-      const lWingX = ship.x + Math.cos(ship.angle + Math.PI * 0.80) * 50
-      const lWingY = ship.y + Math.sin(ship.angle + Math.PI * 0.80) * 50
-      const rWingX = ship.x + Math.cos(ship.angle - Math.PI * 0.80) * 50
-      const rWingY = ship.y + Math.sin(ship.angle - Math.PI * 0.80) * 50
+      const testX = ship.x + Math.cos(ship.angle) * ship.size * 100
+      const testY = ship.y + Math.sin(ship.angle) * ship.size * 100
+      const noseX = ship.x + Math.cos(ship.angle) * ship.size
+      const noseY = ship.y + Math.sin(ship.angle) * ship.size
+      const lWingX = ship.x + Math.cos(ship.angle + Math.PI * 0.80) * ship.size
+      const lWingY = ship.y + Math.sin(ship.angle + Math.PI * 0.80) * ship.size
+      const rWingX = ship.x + Math.cos(ship.angle - Math.PI * 0.80) * ship.size
+      const rWingY = ship.y + Math.sin(ship.angle - Math.PI * 0.80) * ship.size
       ctx.fillStyle = SHIP_COLOR
       ctx.beginPath()
       ctx.moveTo(noseX, noseY)
@@ -70,6 +72,12 @@ function Renderer(canvas) {
       ctx.lineTo(lWingX, lWingY)
       ctx.closePath()
       ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(noseX, noseY)
+      ctx.lineTo(testX, testY)
+      ctx.strokeStyle = '#fff'
+      ctx.lineWidth = 1
+      ctx.stroke()
     })
   }
 
