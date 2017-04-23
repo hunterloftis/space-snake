@@ -2,14 +2,15 @@ function Snake(x, y, size) {
   const turnSpeed = Math.PI
   const speed = 10
   const snake = {
-    position: [{ x, y }],
+    position: [{ x, y, size }],
     get x() { return this.position[0].x },
     get y() { return this.position[0].y },
+    get size() { return this.position[0].size },
+    set size(n) { this.position[0].size = n },
     get moveSpeed() { return speed * this.size },
     direction: 0,
     clockwise: true,
     damage: 0,
-    size,
     update,
     distanceFrom,
     takeDamage,
@@ -49,8 +50,9 @@ function Snake(x, y, size) {
     const dx = Math.cos(snake.direction) * dist
     const dy = Math.sin(snake.direction) * dist
     snake.position.unshift({
-      x: snake.position[0].x + dx,
-      y: snake.position[0].y + dy
+      x: snake.x + dx,
+      y: snake.y + dy,
+      size: snake.size
     })
     snake.position.splice(100)
   }

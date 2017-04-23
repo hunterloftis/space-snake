@@ -33,7 +33,7 @@ function Ship(home, orbit, angle = 0, size=50) {
   function searchFor(snake) {
     if (!ship.orbiting) return
     if (ship.x !== undefined && ship.y !== undefined) {
-      if (snake.distanceFrom(ship.x, ship.y) < 40 * ship.size) {
+      if (snake.distanceFrom(ship.x, ship.y) < 30 * ship.size) {
         ship.orbiting = false
       }
     }
@@ -53,8 +53,10 @@ function Ship(home, orbit, angle = 0, size=50) {
     const dy = snake.y - ship.y
     const followSpeed = speed * snake.moveSpeed
     ship.angle = Math.atan2(dy, dx)
-    ship.x += Math.cos(ship.angle) * followSpeed * seconds
-    ship.y += Math.sin(ship.angle) * followSpeed * seconds
+    if (snake.distanceFrom(ship.x, ship.y) > 18 * ship.size) {
+      ship.x += Math.cos(ship.angle) * followSpeed * seconds
+      ship.y += Math.sin(ship.angle) * followSpeed * seconds
+    }
   }
 
   function updateBullets(seconds, snake) {

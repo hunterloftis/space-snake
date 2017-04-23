@@ -48,7 +48,7 @@ function Renderer(canvas) {
 
   function renderSnake(snake) {
     circle(snake.x, snake.y, snake.size, '#fff')
-    snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, snake.size, '#EC4E20'))
+    snake.position.slice(2).forEach(pos => circle(pos.x, pos.y, pos.size, '#EC4E20'))
     circle(snake.x, snake.y, snake.size * snake.damage, '#fff')
   }
 
@@ -72,8 +72,6 @@ function Renderer(canvas) {
       ctx.lineWidth = 10
       ctx.beginPath()
       ship.bullets.forEach(bullet => {
-        // console.log(ship.bullets)
-        // debugger
         const len = -bullet.speed * seconds
         ctx.moveTo(bullet.x, bullet.y)
         ctx.lineTo(bullet.x + Math.cos(bullet.angle) * len, bullet.y + Math.sin(bullet.angle) * len)

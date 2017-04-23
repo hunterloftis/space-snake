@@ -31,14 +31,30 @@ function Bodies(seed, prewarm = 0) {
     bodies.push(asteroid)
   }
 
-  // large planets with defenses
-  let planet = Body(300, BODY_COLOR, distance() + 1500, 60, sun)
-  bodies.push(planet)
-  for (var i = 0; i < 8; i++) {
-    ships.push(Ship(planet, 450, Math.PI * 2 * i/8))
+  // large planet with defenses
+  {
+    let planet = Body(300, BODY_COLOR, distance() + 1500, 60, sun)
+    bodies.push(planet)
+    for (var i = 0; i < 7; i++) {
+      ships.push(Ship(planet, 450, Math.PI * 2 * i/7))
+    }
+    let moon = Body(100, BODY_COLOR, 800, 20, planet)
+    bodies.push(moon)
   }
-  let moon = Body(100, BODY_COLOR, 800, 20, planet)
-  bodies.push(moon)
+
+
+  // distant planet with defenses
+  {
+    let planet = Body(250, BODY_COLOR, distance() + 2000, 120, sun)
+    bodies.push(planet)
+    for (var i = 0; i < 10; i++) {
+      ships.push(Ship(planet, 1200, Math.PI * 2 * i/10))
+    }
+    let moon1 = Body(50, BODY_COLOR, 800, 20, planet)
+    bodies.push(moon1)
+    let moon2 = Body(100, BODY_COLOR, 1000, 10, planet)
+    bodies.push(moon2)
+  }
 
   bodies.forEach(body => body.update(prewarm))
   return [ bodies, ships ]

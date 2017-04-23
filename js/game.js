@@ -4,8 +4,8 @@ const EATING_EFFICIENCY = 0.25
 const DAMAGE = 0.25
 
 function Game(input) {
-  // const snake = Snake(400, 600, 5)
-  let snake = Snake(400, 600, 100)
+  let snake = Snake(400, 600, 5)
+  // let snake = Snake(400, 600, 100)
   let [ bodies, ships ] = Bodies(123, 3)
   // const particles = []  // expel particles on collisions that you can reclaim
   const game = {
