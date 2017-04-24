@@ -12,6 +12,7 @@ function Game(input) {
     snake,
     bodies,
     ships,
+    hasWon: false,
     update
   }
   bodies = ships = snake = undefined // hack
@@ -23,5 +24,6 @@ function Game(input) {
     game.snake.update(seconds, input, game.bodies, game.ships)
     game.ships.forEach(ship => ship.update(seconds, game.snake))
     game.ships = game.ships.filter(ship => ship.life > 0)
+    game.hasWon = game.bodies[0].isConsumed // have we eaten the sun?
   }
 }

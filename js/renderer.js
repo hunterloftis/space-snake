@@ -41,16 +41,21 @@ function Renderer(canvas) {
     renderSnake(state.snake)
     renderShips(state.ships, seconds)
     ctx.restore()
-    renderScore(state.snake.score)
+    renderScore(state.snake.score, state.snake.damage, state.hasWon)
   }
 
-  function renderScore(number) {
+  function renderScore(number, damage, won) {
     const score = Math.floor(number).toString()
     ctx.font = '24px helvetica'
     ctx.textBaseline = 'top'
     ctx.textAlign = 'left'
+    let text = `score: ${score}`
+    if (won) text = `YOU WIN!  score: ${score}`
+    else if (damage >= 1) text = `you died :(  score: ${score}`
+    ctx.fillStyle = SPACE_COLOR
+    ctx.fillText(text, 11, 12)
     ctx.fillStyle = TEXT_COLOR
-    ctx.fillText(`score: ${score}`, 10, 10)
+    ctx.fillText(text, 10, 10)
   }
 
   function renderStars() {

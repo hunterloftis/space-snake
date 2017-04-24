@@ -38,13 +38,12 @@ function Snake(x, y, size) {
   function update(seconds, input, bodies, ships) {
     updateParticles(seconds)
     if (snake.damage >= 1) return
-    updateDirection(input, bodies, ships)
+    updateDirection(input)
     move(seconds, input)
     hitBodies(seconds, bodies)
   }
 
   function updateDirection(input, bodies, ships) {
-    if (bodies.length + ships.length === 0) return  // "you win"
     if (input.left) snake.clockwise = false
     else if (input.right) snake.clockwise = true
   }
