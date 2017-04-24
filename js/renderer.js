@@ -28,19 +28,27 @@ function Renderer(canvas) {
     const center = { x: canvas.width * 0.5, y: canvas.height * 0.5 }
     camera.update(state.snake, seconds)
     const parallax = 0.25 * camera.zoom
+    const pZoom = parallax + 0.75
+
     ctx.fillStyle = SPACE_COLOR
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+
     ctx.save()
     ctx.translate(center.x, center.y)
+
+    ctx.save()
+    ctx.scale(pZoom, pZoom)
     ctx.translate(-camera.x * parallax, -camera.y * parallax)
     renderStars()
-    ctx.translate(camera.x * parallax, camera.y * parallax)
+    ctx.restore()
+
     ctx.scale(camera.zoom, camera.zoom)
     ctx.translate(-camera.x, -camera.y)
     renderBodies(state.bodies)
     renderSnake(state.snake)
     renderShips(state.ships, seconds)
     ctx.restore()
+
     renderScore(state.snake.score, state.snake.damage, state.hasWon)
   }
 
