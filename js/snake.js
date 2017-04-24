@@ -13,6 +13,7 @@ function Snake(x, y, size) {
     set direction(n) { this.position[0].direction = n },
     get evolution() { return Math.min(this.size / 50, 1) },
     particles: [],
+    score: 0,
     clockwise: true,
     damage: 0,
     update,
@@ -25,6 +26,7 @@ function Snake(x, y, size) {
 
   function grow(mass) {
     snake.size += mass * 0.25
+    snake.score += mass
   }
 
   function distanceFrom(x, y) {
@@ -36,8 +38,15 @@ function Snake(x, y, size) {
   function update(seconds, input, bodies, ships) {
     updateParticles(seconds)
     if (snake.damage >= 1) return
+    updateDirection(input, bodies, ships)
     move(seconds, input)
     hitBodies(seconds, bodies)
+  }
+
+  function updateDirection(input, bodies, ships) {
+    if (bodies.length + ships.length === 0) return  // "you win"
+    if (input.left) snake.clockwise = false
+    else if (input.right) snake.clockwise = true
   }
 
   function updateParticles(seconds) {
@@ -65,8 +74,6 @@ function Snake(x, y, size) {
   }
 
   function move(seconds, input) {
-    if (input.left) snake.clockwise = false
-    else if (input.right) snake.clockwise = true
     const sign = snake.clockwise ? 1 : -1
     snake.direction += turnSpeed * seconds * sign
     const dist = speed * seconds * snake.size
@@ -92,7 +99,8 @@ function Snake(x, y, size) {
 
   function eat(body) {
     if (body.isLargerThan(snake.size)) return true
-    snake.size += body.consume()
+    snake.grow(body.size)
+    body.consume()
     return false
   }
 

@@ -3,6 +3,7 @@ const SHIP_COLOR = '#F6F8FF'
 const SNAKE_COLOR = '#EC4E20'
 const SNAKE_HEAD_COLOR = '#fff'
 const BULLET_COLOR = '#fff'
+const TEXT_COLOR = '#fff'
 
 function Renderer(canvas) {
   const ctx = canvas.getContext('2d')
@@ -40,6 +41,16 @@ function Renderer(canvas) {
     renderSnake(state.snake)
     renderShips(state.ships, seconds)
     ctx.restore()
+    renderScore(state.snake.score)
+  }
+
+  function renderScore(number) {
+    const score = Math.floor(number).toString()
+    ctx.font = '24px helvetica'
+    ctx.textBaseline = 'top'
+    ctx.textAlign = 'left'
+    ctx.fillStyle = TEXT_COLOR
+    ctx.fillText(`score: ${score}`, 10, 10)
   }
 
   function renderStars() {

@@ -34,8 +34,6 @@ function Body(size, color='#80FFEC', orbit=0, period=1, parent) {
   }
 
   function consume() {
-    let consumed = body.size * EATING_EFFICIENCY
     body.size = 0
-    return consumed
   }
 }
